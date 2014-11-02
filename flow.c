@@ -1,22 +1,17 @@
-#include <iostream>
+// #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <list>
-#include <vector>
+// #include <list>
+// #include <vector.h>
 #include <limits.h>
-#include <algorithm>
+// #include <algorithm>
 #include <queue>
 #include <string.h>
 
-using namespace std;
-
 int vertices;
-int graph[300][300];
-int residual_graph[300][300];
-int parent[300];
 // int graph[300][300];
 
-bool breadth_first_search(int source,int sink )
+bool breadth_first_search(int graph[vertices][vertices],int source,int sink, int *parent)
 {
 	bool visited[vertices];
 	memset(visited,0,sizeof(visited));
@@ -24,11 +19,9 @@ bool breadth_first_search(int source,int sink )
 	q.push(source);
 	visited[source]=true;
 	parent[source]=-1;
-	cout<<"bfs enteres\n";
-	while(!q.empty())
+	while(q.empty()==false)
 	{
 		int some_vertex=q.front();
-		cout<<some_vertex<<endl;
 		q.pop();
 		for (int i = 0; i < vertices; ++i)
 		{
@@ -43,10 +36,10 @@ bool breadth_first_search(int source,int sink )
 	return (visited[sink]==true);
 }
 
-int ford_fulkerson(int source,int sink)
+int ford_fulkerson(int graph[vertices][vertices],int source,int sink)
 {
 	int u,v;
-	
+	int residual_graph[vertices][vertices];
 	for (int i = 0; i < vertices; ++i)
 	{
 		for (int j = 0; j < vertices; ++j)
@@ -54,9 +47,9 @@ int ford_fulkerson(int source,int sink)
 			residual_graph[i][j]=graph[i][j];
 		}
 	}
-	// int parent[vertices];
+	int parent[vertices];
 	int max_flow=0;
-	while(breadth_first_search(source,sink))
+	while(breadth_first_search(residual_graph,source,sink,parent))
 	{
 		int path_flow = INT_MAX;
 		for ( v = sink; v!=source; v=parent[v])
@@ -79,7 +72,7 @@ int main()
 {
 	// int vertices;
 	scanf("%d",&vertices);
-	// int graph[vertices][vertices];
+	int graph[vertices][vertices];
 	int x,y,cost;
 	
 	// fill(&graph[0][0],&graph[0][0]+(vertices*vertices),0);
@@ -90,12 +83,10 @@ int main()
 				graph[i][j]=0;
 			}	
 	}
-	while(scanf("%d%d%d",&x,&y,&cost) != EOF)
+	while(scanf("%d%d%d",&x,&y,&cost)!=EOF)
 	{
-		// cout<<x<<","<<y<<","<<cost<<endl;
 		graph[x][y]=cost;
 	}
-	
-	printf("%d\n",ford_fulkerson(0,(vertices-1)) );
+	printf("%d\n",ford_fulkerson(graph,0,(vertices-1)) );
 	return 0;
 }
